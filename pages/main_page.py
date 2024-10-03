@@ -48,3 +48,20 @@ class MainPage(BasePage):
         self.click_create_order()
         self.wait_until_loading_overlay_hidden()
         self.close_modal_popup_and_wait_closing()
+
+    @allure.step("получить элемент с заголовком 'Соберите бургер'")
+    def get_title_of_create_burger(self):
+        return self.wait_and_find_element(MainPageLocators.create_burger_title)
+
+    @allure.step("получить элемент с заголовком 'Лента заказов'")
+    def get_title_of_orders_feed(self):
+        return self.wait_and_find_element(MainPageLocators.orders_feed_title)
+
+    @allure.step("получить элемент с заголовком окна 'Детали ингредиента'")
+    def get_title_of_details_popup(self):
+        modal_popup = self.get_modal_popup_element()
+        return self.wait_and_find_element_in_element(modal_popup, MainPageLocators.details_popup_title)
+
+    @allure.step("получить элемент с заголовком ИД созданного заказа")
+    def get_title_of_created_order_id(self):
+        return self.wait_and_find_element(MainPageLocators.created_order_id_title)

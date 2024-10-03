@@ -1,7 +1,6 @@
 import allure
 
 from Urls import Urls
-from locators.main_page_locators import MainPageLocators
 from pages.main_page import MainPage
 from pages.personal_account_page import PersonalAccountPage
 
@@ -12,7 +11,7 @@ class TestMain:
         main_page = MainPage(driver)
         main_page.open_page(Urls.USER_LOGIN)
         main_page.to_constructor_by_link_in_header()
-        create_burgers_title = main_page.wait_and_find_element(MainPageLocators.create_burger_title)
+        create_burgers_title = main_page.get_title_of_create_burger()
 
         assert create_burgers_title is not None
 
@@ -20,7 +19,7 @@ class TestMain:
     def test_move_to_orders_feed(self, driver):
         main_page = MainPage(driver)
         main_page.to_orders_feed_by_link_in_header()
-        orders_feed_title = main_page.wait_and_find_element(MainPageLocators.orders_feed_title)
+        orders_feed_title = main_page.get_title_of_orders_feed()
 
         assert orders_feed_title is not None
 
@@ -28,9 +27,7 @@ class TestMain:
     def test_open_details_popup_for_ingredient(self, driver):
         main_page = MainPage(driver)
         main_page.click_on_ingredient(3)
-        modal_popup = main_page.get_modal_popup_element()
-        ingredient_details_title \
-            = main_page.wait_and_find_element_in_element(modal_popup, MainPageLocators.details_popup_title)
+        ingredient_details_title = main_page.get_title_of_details_popup()
 
         assert ingredient_details_title is not None and ingredient_details_title.is_displayed()
 
@@ -62,6 +59,6 @@ class TestMain:
         main_page.add_ingredient_to_order(0)
         main_page.add_ingredient_to_order(4)
         main_page.click_create_order()
-        created_order_id_title = main_page.wait_and_find_element(MainPageLocators.created_order_id_title)
+        created_order_id_title = main_page.get_title_of_created_order_id()
 
         assert created_order_id_title is not None
