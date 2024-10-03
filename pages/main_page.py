@@ -42,10 +42,7 @@ class MainPage(BasePage):
 
     @allure.step("создать заказ: 2 булки и соус")
     def create_order_with_first_bun_and_first_sauce(self):
-        if self.driver.current_url != Urls.BASE_PAGE_URL:
-            self.open_page(Urls.BASE_PAGE_URL)
-            self.wait_until_url_to_be(Urls.BASE_PAGE_URL)
-
+        self.open_url_if_its_not_opened_yet(Urls.BASE_PAGE_URL)
         self.add_ingredient_to_order(0)
         self.add_ingredient_to_order(3)
         self.click_create_order()

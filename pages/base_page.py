@@ -98,3 +98,9 @@ class BasePage:
     @allure.step("вернуть элемент с модальным окном")
     def get_modal_popup_element(self):
         return self.wait_and_find_element(BasePageLocators.modal_popup)
+
+    @allure.step("перейти по URL, если этого еще не сделано")
+    def open_url_if_its_not_opened_yet(self, url):
+        if self.driver.current_url != url:
+            self.open_page(url)
+            self.wait_until_url_to_be(url)
