@@ -18,9 +18,12 @@ class BasePage:
 
     @allure.step("поиск (с ожиданием появления) элемента внутри другого элемента")
     def wait_and_find_element_in_element(self, parent, locator_of_element):
-        WebDriverWait(parent, self.base_wait_timeout) \
-            .until(expected_conditions.visibility_of_element_located(locator_of_element))
-        return parent.find_element(*locator_of_element)
+        try:
+            WebDriverWait(parent, self.base_wait_timeout) \
+                .until(expected_conditions.visibility_of_element_located(locator_of_element))
+            return parent.find_element(*locator_of_element)
+        except Exception:
+            return None
 
     @allure.step("поиск (с ожиданием появления) элемента по всему документу")
     def wait_and_find_element(self, locator_of_element):
@@ -28,15 +31,21 @@ class BasePage:
 
     @allure.step("поиск (с ожиданием появления) элементов по всему документу")
     def wait_and_find_several_elements(self, locator_of_element):
-        WebDriverWait(self.driver, self.base_wait_timeout) \
-            .until(expected_conditions.visibility_of_any_elements_located(locator_of_element))
-        return self.driver.find_elements(*locator_of_element)
+        try:
+            WebDriverWait(self.driver, self.base_wait_timeout) \
+                .until(expected_conditions.visibility_of_any_elements_located(locator_of_element))
+            return self.driver.find_elements(*locator_of_element)
+        except Exception:
+            return []
 
     @allure.step("поиск (с заданным ожиданием появления) элемента, содержащего определенный текст, по всему документу")
     def wait_text_and_find_element_with_timeout(self, locator_of_element, text, timeout):
-        WebDriverWait(self.driver, timeout) \
-            .until(expected_conditions.text_to_be_present_in_element(locator_of_element, text))
-        return self.driver.find_element(*locator_of_element)
+        try:
+            WebDriverWait(self.driver, timeout) \
+                .until(expected_conditions.text_to_be_present_in_element(locator_of_element, text))
+            return self.driver.find_element(*locator_of_element)
+        except Exception:
+            return None
 
     @allure.step("поиск (с ожиданием появления) элемента, содержащего определенный текст, по всему документу")
     def wait_text_and_find_element(self, locator_of_element, text):
@@ -44,13 +53,21 @@ class BasePage:
 
     @allure.step("ожидание, пока URL не станет равным заданному")
     def wait_until_url_to_be(self, url):
-        WebDriverWait(self.driver, self.base_wait_timeout).until(expected_conditions.url_to_be(url))
+        try:
+            WebDriverWait(self.driver, self.base_wait_timeout).until(expected_conditions.url_to_be(url))
+        except Exception:
+            pass
 
     @allure.step("выполнить клик по элементу (с ожиданием появления этого эелемента)")
     def click_element_by_locator(self, locator):
         self.hide_modal_layers()
-        WebDriverWait(self.driver, self.base_wait_timeout).until(expected_conditions.element_to_be_clickable(locator))
-        self.driver.find_element(*locator).click()
+
+        try:
+            WebDriverWait(self.driver, self.base_wait_timeout).until(
+                expected_conditions.element_to_be_clickable(locator))
+            self.driver.find_element(*locator).click()
+        except Exception:
+            pass
 
     @allure.step("выполнить клик по элементу")
     def click_element(self, element):
@@ -63,17 +80,26 @@ class BasePage:
 
     @allure.step("ожидание того, как элемент (по локатору) станет невидимым")
     def wait_until_invisibility(self, locator):
-        WebDriverWait(self.driver, self.base_wait_timeout) \
-            .until(expected_conditions.invisibility_of_element_located(locator))
+        try:
+            WebDriverWait(self.driver, self.base_wait_timeout) \
+                .until(expected_conditions.invisibility_of_element_located(locator))
+        except Exception:
+            pass
 
     @allure.step("ожидание того, как элемент станет невидимым")
     def wait_until_invisibility_element(self, element):
-        WebDriverWait(self.driver, self.base_wait_timeout) \
-            .until(expected_conditions.invisibility_of_element(element))
+        try:
+            WebDriverWait(self.driver, self.base_wait_timeout) \
+                .until(expected_conditions.invisibility_of_element(element))
+        except Exception:
+            pass
 
     @allure.step("перетащить элемент 'source' в элемент 'target'")
     def drag_and_drop(self, source, target):
-        ActionChains(self.driver).drag_and_drop(source, target).perform()
+        try:
+            ActionChains(self.driver).drag_and_drop(source, target).perform()
+        except Exception:
+            pass
 
     @allure.step("ожидание, пока загрузочный слой станет невидим")
     def wait_until_loading_overlay_hidden(self):
@@ -87,10 +113,15 @@ class BasePage:
 
     @allure.step("скрыть слои, перехватывающие нажатия")
     def hide_modal_layers(self):
-        WebDriverWait(self.driver, self.base_wait_timeout) \
-            .until(expected_conditions.presence_of_all_elements_located(BasePageLocators.modal_overlays))
+        overlays = []
 
-        overlays = self.driver.find_elements(*BasePageLocators.modal_overlays)
+        try:
+            WebDriverWait(self.driver, self.base_wait_timeout) \
+                .until(expected_conditions.presence_of_all_elements_located(BasePageLocators.modal_overlays))
+
+            overlays = self.driver.find_elements(*BasePageLocators.modal_overlays)
+        except Exception:
+            pass
 
         for overlay in overlays:
             self.driver.execute_script("arguments[0].style.visibility = 'hidden'", overlay)

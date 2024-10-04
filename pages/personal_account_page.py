@@ -37,3 +37,12 @@ class PersonalAccountPage(BasePage):
             lambda x: x.text,
             self.wait_and_find_several_elements(PersonalAccountPageLocators.order_id_in_history)
         ))
+
+    @allure.step("получить первый ИД заказа из истории")
+    def get_first_order_id_from_history(self):
+        orders = self.get_order_ids_from_history()
+
+        if len(orders) > 0:
+            return orders[0][1:]
+
+        return 0

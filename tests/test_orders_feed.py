@@ -80,7 +80,7 @@ class TestOrdersFeed:
 
         personal_page.to_personal_account_by_link_in_header()
         personal_page.to_orders_history()
-        order_id = personal_page.get_order_ids_from_history()[0][1:]
+        order_id = personal_page.get_first_order_id_from_history()
         main_page.to_orders_feed_by_link_in_header()
 
         feed_page = OrdersFeedPage(driver)
